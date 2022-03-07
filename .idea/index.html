@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>WordDisplay</title>
+
+    <script
+            src="https://code.jquery.com/jquery-3.6.0.js"
+            integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk="
+            crossorigin="anonymous"></script>
+
+
+</head>
+<body>
+<textarea name="textarea" id="input" rows="20" cols="50" placeholder="Enter text here..."></textarea>
+<br>
+<input type="button" id="btn" value="Display" onclick="show()">
+
+<script>
+
+    var wordFreq={};
+    var uniqueWords = [];
+    var interval = null;
+    var winHeight = window.innerHeight;
+    var winWidth = window.innerWidth;
+    function show(){
+        var text = $('#input').val();
+        var words = text.split(/\s+/);
+
+        $('#input, #btn').toggle();
+        var div = $('<div>').css({width: winWidth.toString+'px', height: winHeight.toString+'px'});
+        div.addClass("main");
+        div.appendTo('body');
+
+        wordCount(words);
+        startAnimation(words);
+    }
+
+    function wordCount(words){
+        for(let w of words){
+            wordFreq[w] == undefined ? wordFreq[w] = 1 : wordFreq[w]++;
+        }
+    }
+
+    function startAnimation(){
+        for (prop in wordFreq){
+            uniqueWords.push(prop);
+        }
+       interval = setInterval(()=> animate(), 180)
+    }
+
+    let i=0;
+    function animate(){
+
+        var canv = $('.main');
+        var size = wordFreq[uniqueWords[i]] *50;
+
+        var word = uniqueWords[i];
+
+        var x = randomInInterval(100, winWidth-300);
+        var y = randomInInterval(100, winHeight-300);
+
+        var r = Math.round(Math.random() * (255 - 0));
+        var g = Math.round(Math.random() * (255 - 0));
+        var b = Math.round(Math.random() * (255 - 0));
+
+        canv.append('<p id="curent" style=" position: absolute; color: rgb('+r+', '+g+','+b+'); font-size: '+20+'px; left: '+800+'px; top: '+0+'px">'+word+'</p>');
+        var p = $('#curent');
+
+        p.animate({left: x+'px', top: y+'px'}, 400, function (){
+            p.animate({'font-size' : size+'px'}, 150);
+        });
+        p.removeAttr('id');
+        i++;
+
+        if (i >= uniqueWords.length){
+            clearInterval(interval);
+        }
+    }
+
+    function randomInInterval(min, max){
+        return Math.round(Math.random() * (max - min) + min);
+    }
+
+
+</script>
+</body>
+</html>
